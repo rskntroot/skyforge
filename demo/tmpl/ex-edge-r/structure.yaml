@@ -1,0 +1,5 @@
+files:
+  - system
+  - chassis
+  - interfaces
+  - protocols

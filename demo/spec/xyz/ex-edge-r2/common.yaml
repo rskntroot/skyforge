@@ -1,0 +1,3 @@
+common:
+  partition: eu
+  layer: ex-edge-r
