@@ -21,11 +21,6 @@ fn main() {
 
     for spec in specifications {
         let result = tmpls::process_templates(&spec, dbg).ok().unwrap();
-        verb!(
-            dbg,
-            "Compiled Spec:\n{}",
-            serde_json::to_string_pretty(&spec.compiled["data"]).unwrap()
-        );
         output_rendered_configs(result, dbg)
     }
 }
