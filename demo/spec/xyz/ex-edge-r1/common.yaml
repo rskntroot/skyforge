@@ -1,2 +1,4 @@
 common:
-  layer: ex-edge-r
+    layer: ex-edge-r
+    protocol: bgp
+    uplink: et-0/0/0

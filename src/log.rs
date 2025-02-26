@@ -51,10 +51,7 @@ macro_rules! verb {
 macro_rules! dbug {
     ($current_level:expr, $($msg:expr),*) => {
         if LogLevel::Debug.value() >= $current_level.value() {
-            let message = format!($($msg),*);
-            for line in message.lines() {
-                println!(" |D| {}", line);
-            }
+            println!($($msg),*);
         }
     };
 }

@@ -1,4 +1,4 @@
-use crate::{info, verb, LogLevel};
+use crate::{dbug, info, verb, LogLevel};
 use regex::Regex;
 use serde_json::{json, Map, Value};
 use serde_yml;
@@ -121,7 +121,7 @@ pub fn compile(pattern: &Regex, spec_path: &String, dbg: LogLevel) -> Vec<Specif
         specifications.push(
             match Specification::build(&partitional, &regional, &common, &zonal, &spec) {
                 Ok(compiled_spec) => {
-                    verb!(
+                    dbug!(
                         dbg,
                         "Compiled Spec for '{}'\n | {}\n | {}\n | {}\n | {}\n | {}",
                         compiled_spec.get_hostname(),

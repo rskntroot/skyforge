@@ -1,3 +1,5 @@
 common:
-  partition: eu
-  layer: ex-edge-r
+    partition: eu
+    layer: ex-edge-r
+    protocol: ospf
+    uplink: et-0/0/36

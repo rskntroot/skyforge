@@ -1,5 +1,5 @@
 use crate::specs::Specification;
-use crate::{verb, LogLevel};
+use crate::{info, verb, LogLevel};
 use serde_json::Value;
 use serde_yml;
 use std::fs;
@@ -10,10 +10,16 @@ struct TemplateConfig {
     files: Vec<String>,
 }
 
+pub struct RenderedConfig {
+    pub hostname: String,
+    pub configs: Vec<(String, String)>,
+    pub spec: Value,
+}
+
 pub fn process_templates(
     spec: &Specification,
     dbg: LogLevel,
-) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+) -> Result<RenderedConfig, Box<dyn std::error::Error>> {
     // Create Tera context from spec.compiled
     let mut context = Context::new();
     if let Value::Object(map) = &spec.compiled {
@@ -23,6 +29,11 @@ pub fn process_templates(
             }
         }
     }
+
+    let device_name = match context.get("hostname") {
+        Some(value) => value.as_str().unwrap_or("default_hostname"),
+        None => "default_hostname",
+    };
 
     // Get the base directory path
     let base_dir = format!("./tmpl/{}", spec.get_layer());
@@ -36,8 +47,8 @@ pub fn process_templates(
     let mut tera = Tera::default();
 
     // Process each template
-    verb!(dbg, "Rendering Templates");
-    let mut rendered_templates = Vec::new();
+    info!(dbg, "Rendering {}", &device_name);
+    let mut configs = Vec::new();
     for template_name in config.files {
         // Read the template file directly
         let template_path = format!("{}/{}.tmpl", base_dir, template_name);
@@ -49,8 +60,12 @@ pub fn process_templates(
 
         // Render the template
         let rendered = tera.render(&template_name, &context)?;
-        rendered_templates.push(rendered);
+        configs.push((String::from(&template_name), rendered));
     }
 
-    Ok(rendered_templates)
+    Ok(RenderedConfig {
+        hostname: String::from(device_name),
+        configs,
+        spec: spec.compiled.clone(),
+    })
 }

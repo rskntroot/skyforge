@@ -1,2 +1,3 @@
 regional:
-  partition: us
+    partition: us
+    username: netadmin
